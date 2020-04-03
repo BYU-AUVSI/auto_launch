@@ -18,13 +18,13 @@ def main():
     msg = RCRaw()
     msg.values = [1500]*8
     msg.values[2] = 1000
-    rate = rospy.Rate(10)
+    rate = rospy.Rate(1)
     rospy.sleep(delay_seconds)
     for state, duration in states:
         start_time = rospy.get_time()
         rospy.logwarn(state)
         if state=='calibration':
-            services = ['calibrate_baro', 'calibrate_imu', 'calibrate_airspeed']
+            services = ['calibrate_baro', 'calibrate_imu']
             for s in services:
                 print(s)
                 call_service(s)
@@ -32,7 +32,7 @@ def main():
             msg.values[4]=2000
         if state=='flight':
             msg.values[2]=2000
-            
+
         while rospy.get_time() - start_time < duration and not rospy.is_shutdown():
             msg.header.seq += 1
             rc_pub.publish(msg)
